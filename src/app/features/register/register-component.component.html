@@ -1,0 +1,110 @@
+<div class="auth-container">
+      <div class="auth-card">
+        <h1 class="auth-title">Crear Cuenta</h1>
+        <p class="auth-subtitle">Crea tu perfil de links personalizado</p>
+        
+        <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="auth-form">
+          <!-- <div class="form-group"> -->
+            <!-- <label for="name">Nombre (Opcional)</label>
+            <input 
+              type="text" 
+              id="name" 
+              formControlName="name"
+              placeholder="Tu nombre completo"
+            >
+          </div> -->
+
+          <div class="form-group">
+            <label for="username">Usuario</label>
+            <input 
+              type="text" 
+              id="username" 
+              formControlName="username"
+              [class.error]="registerForm.get('username')?.invalid && registerForm.get('username')?.touched"
+              placeholder="tu_usuario"
+            >
+            <div 
+              class="error-message" 
+              *ngIf="registerForm.get('username')?.invalid && registerForm.get('username')?.touched"
+            >
+              Usuario es requerido (mínimo 3 caracteres)
+            </div>
+          </div>
+
+          <!-- <div class="form-group">
+            <label for="email">Email</label>
+            <input 
+              type="email" 
+              id="email" 
+              formControlName="email"
+              [class.error]="registerForm.get('email')?.invalid && registerForm.get('email')?.touched"
+              placeholder="tu@email.com"
+            >
+            <div 
+              class="error-message" 
+              *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched"
+            >
+              Email es requerido y debe ser válido
+            </div>
+          </div> -->
+
+          <div class="form-group">
+            <label for="password">Contraseña</label>
+            <input 
+              type="password" 
+              id="password" 
+              formControlName="password"
+              [class.error]="registerForm.get('password')?.invalid && registerForm.get('password')?.touched"
+              placeholder="Mínimo 6 caracteres"
+            >
+            <div 
+              class="error-message" 
+              *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched"
+            >
+              La contraseña debe tener al menos 6 caracteres
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="confirmPassword">Confirmar Contraseña</label>
+            <input 
+              type="password" 
+              id="confirmPassword" 
+              formControlName="confirmPassword"
+              [class.error]="registerForm.get('confirmPassword')?.invalid && registerForm.get('confirmPassword')?.touched"
+              placeholder="Repite tu contraseña"
+            >
+            <div 
+              class="error-message" 
+              *ngIf="registerForm.get('confirmPassword')?.invalid && registerForm.get('confirmPassword')?.touched"
+            >
+              Las contraseñas no coinciden
+            </div>
+          </div>
+
+          <button 
+            type="submit" 
+            class="auth-button"
+            [disabled]="registerForm.invalid || loading"
+          >
+            <span *ngIf="loading">Creando cuenta...</span>
+            <span *ngIf="!loading">Crear Cuenta</span>
+          </button>
+        </form>
+
+        <div class="auth-links">
+          <p>¿Ya tienes cuenta? <a routerLink="/login">Iniciar Sesión</a></p>
+        </div>
+
+        <!-- Mensaje de error -->
+        <div class="error-message" *ngIf="errorMessage">
+          {{ errorMessage }}
+        </div>
+
+        <!-- Debug info -->
+        <div class="debug-info" *ngIf="showDebug">
+          <h3>Debug Info:</h3>
+          <pre>{{ registerForm.value | json }}</pre>
+        </div>
+      </div>
+    </div>

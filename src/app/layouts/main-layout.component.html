@@ -1,0 +1,24 @@
+<header>
+        <nav class="nav">
+         @if(isLoggedIn){   
+        <a routerLink="/dashboard">Dashboard</a>
+        <button (click)="logout()">Logout</button>
+        }
+        <!-- @if(isLoggedIn){ -->
+        <!-- <a routerLink="/carrito">Ir al carrito</a> -->
+        <!-- } -->
+        @if(!isLoggedIn){
+        <a routerLink="/login">Login</a>
+        <a routerLink="/register">Register</a>
+        }
+        <!-- @if(!isLoggedIn){ -->
+        <!-- } -->
+        <!-- @if(isLoggedIn){ -->
+        <!-- <button (click)="logout()">Cerrar sesión</button> -->
+        <!-- } -->
+        
+    </nav>
+</header>
+<main>
+    <router-outlet />
+</main>
