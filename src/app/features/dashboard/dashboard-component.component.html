@@ -1,1 +1,161 @@
-<p>dashboard-component works!</p>
+<div class="profile-container">
+      <!-- Header -->
+      <header class="profile-header">
+        <div class="header-content">
+          <div class="user-info">
+            <h1 class="welcome-title">¡Hola, {{ currentUser?.name || currentUser?.username }}!</h1>
+            <p class="welcome-subtitle">Gestiona tus links y comparte tu perfil</p>
+          </div>
+          
+          <div class="header-actions">
+            <button class="btn btn-outline" (click)="toggleAddForm()">
+              <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+              </svg>
+              Agregar Link
+            </button>
+            
+            <button class="btn btn-danger" (click)="logout()">
+              <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0v2z"/>
+                <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z"/>
+              </svg>
+              Salir
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <!-- Formulario para agregar/editar links -->
+      <div class="link-form-container" *ngIf="showAddForm">
+        <div class="form-card">
+          <h2>{{ editingLink ? 'Editar Link' : 'Agregar Nuevo Link' }}</h2>
+          
+          <form [formGroup]="linkForm" (ngSubmit)="onSubmitLink()" class="link-form">
+            <div class="form-group">
+              <label for="title">Título del Link</label>
+              <input 
+                type="text" 
+                id="title" 
+                formControlName="title"
+                placeholder="Ej: Mi Portfolio"
+                [class.error]="linkForm.get('title')?.invalid && linkForm.get('title')?.touched"
+              >
+              <div 
+                class="error-message" 
+                *ngIf="linkForm.get('title')?.invalid && linkForm.get('title')?.touched"
+              >
+                El título es requerido
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="url">URL</label>
+              <input 
+                type="url" 
+                id="url" 
+                formControlName="url"
+                placeholder="https://example.com"
+                [class.error]="linkForm.get('url')?.invalid && linkForm.get('url')?.touched"
+              >
+              <div 
+                class="error-message" 
+                *ngIf="linkForm.get('url')?.invalid && linkForm.get('url')?.touched"
+              >
+                URL es requerida y debe ser válida
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button type="button" class="btn btn-outline" (click)="cancelEdit()">
+                Cancelar
+              </button>
+              <button 
+                type="submit" 
+                class="btn btn-primary"
+                [disabled]="linkForm.invalid || loadingLink"
+              >
+                <span *ngIf="loadingLink">{{ editingLink ? 'Actualizando...' : 'Agregando...' }}</span>
+                <span *ngIf="!loadingLink">{{ editingLink ? 'Actualizar' : 'Agregar' }}</span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Lista de links -->
+      <div class="links-section">
+        <div class="section-header">
+          <h2>Mis Links ({{ links.length }})</h2>
+          <div class="stats">
+            <span class="total-clicks">{{ getTotalClicks() }} clicks totales</span>
+          </div>
+        </div>
+
+        <!-- Estado de carga -->
+        <div class="loading-state" *ngIf="loadingLinks">
+          <div class="spinner"></div>
+          <p>Cargando links...</p>
+        </div>
+
+        <!-- Lista vacía -->
+        <div class="empty-state" *ngIf="!loadingLinks && links.length === 0">
+          <div class="empty-icon">
+            <svg width="64" height="64" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M6.354 5.5H4a3 3 0 0 0 0 6h3a3 3 0 0 0 2.83-4H9c-.086 0-.17.01-.25.031A2 2 0 0 1 7 5.5zM4 6.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zM12 6.5a3 3 0 0 0-2.83 4H12a3 3 0 0 0 0-6h-1.17A2 2 0 0 1 9 5.5h3zM12 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"/>
+            </svg>
+          </div>
+          <h3>No tienes links aún</h3>
+          <p>Crea tu primer link para empezar a compartir</p>
+          <button class="btn btn-primary" (click)="toggleAddForm()">
+            Crear mi primer link
+          </button>
+        </div>
+
+        <!-- Lista de links con drag and drop -->
+        <div 
+          class="links-list" 
+          *ngIf="!loadingLinks && links.length > 0"
+          cdkDropList
+          (cdkDropListDropped)="onDrop($event)"
+        >
+          <div 
+            *ngFor="let link of links; trackBy: trackByLinkId" 
+            cdkDrag
+            class="link-item-container"
+          >
+            <app-link-item 
+              [link]="link"
+              (edit)="editLink($event)"
+              (delete)="deleteLink($event)"
+            ></app-link-item>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mensajes de éxito/error -->
+      <div class="message success" *ngIf="successMessage">
+        {{ successMessage }}
+      </div>
+      
+      <div class="message error" *ngIf="errorMessage">
+        {{ errorMessage }}
+      </div>
+
+      <!-- Debug info -->
+      <div class="debug-info" *ngIf="showDebug">
+        <h3>Debug Info:</h3>
+        <div class="debug-section">
+          <h4>Current User:</h4>
+          <pre>{{ currentUser | json }}</pre>
+        </div>
+        <div class="debug-section">
+          <h4>Links ({{ links.length }}):</h4>
+          <pre>{{ links | json }}</pre>
+        </div>
+        <div class="debug-section">
+          <h4>Form Value:</h4>
+          <pre>{{ linkForm.value | json }}</pre>
+        </div>
+      </div>
+    </div>

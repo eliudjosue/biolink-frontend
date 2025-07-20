@@ -30,7 +30,7 @@ export class LoginComponentComponent {
   }
   onSubmit(): void {
     this.authService.login(this.loginForm.value).subscribe({
-      next: () => this.router.navigate(['']),
+      next: () => this.router.navigate(['dashboard']),
       error: (err) => alert(`Error de login: ${JSON.stringify(err)}`)
     })
   }

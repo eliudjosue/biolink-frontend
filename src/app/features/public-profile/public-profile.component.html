@@ -1,0 +1,104 @@
+ <div class="public-profile-container">
+      <!-- Loading State -->
+      <div class="loading-container" *ngIf="loading">
+        <div class="loading-spinner"></div>
+        <p>Cargando perfil...</p>
+      </div>
+
+      <!-- Error State -->
+      <div class="error-container" *ngIf="error && !loading">
+        <div class="error-icon">
+          <svg width="64" height="64" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293 5.354 4.646z"/>
+          </svg>
+        </div>
+        <h2>Perfil no encontrado</h2>
+        <p>El usuario que buscas no existe o no tiene links públicos.</p>
+        <button class="btn btn-primary" (click)="goHome()">
+          Ir al inicio
+        </button>
+      </div>
+
+      <!-- Profile Content -->
+      <div class="profile-content" *ngIf="!loading && !error">
+        <!-- Background Pattern -->
+        <div class="background-pattern"></div>
+        
+        <!-- Profile Header -->
+        <div class="profile-header">
+          <div class="avatar-container">
+            <div class="avatar">
+              <span class="avatar-text">{{ getInitials(username) }}</span>
+            </div>
+            <div class="avatar-ring"></div>
+          </div>
+          
+          <h1 class="profile-name">{{ displayName }}</h1>
+          <p class="profile-username">&#64;{{ username }}</p>
+          
+          <div class="profile-stats" *ngIf="links.length > 0">
+            <div class="stat">
+              <span class="stat-number">{{ links.length }}</span>
+              <span class="stat-label">Links</span>
+            </div>
+            <div class="stat">
+              <span class="stat-number">{{ getTotalClicks() }}</span>
+              <span class="stat-label">Clicks</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Links Section -->
+        <div class="links-section" *ngIf="links.length > 0">
+          <div class="links-container">
+            <div 
+              *ngFor="let link of links; trackBy: trackByLinkId; let i = index" 
+              class="link-card"
+              [style.animation-delay]="(i * 0.1) + 's'"
+              (click)="openLink(link)"
+            >
+              <div class="link-content">
+                <div class="link-icon">
+                  <svg width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M4.715 6.542 3.343 7.914a3 3 0 1 0 4.243 4.243l1.828-1.829A3 3 0 0 0 8.586 5.5L8 6.086a1.002 1.002 0 0 0-.154.199 2 2 0 0 1 .861 3.337L6.88 11.45a2 2 0 1 1-2.83-2.83l.793-.792a4.018 4.018 0 0 1-.128-1.287z"/>
+                    <path d="M6.586 4.672A3 3 0 0 0 7.414 9.5l.775-.776a2 2 0 0 1-.896-3.346L9.12 3.55a2 2 0 1 1 2.83 2.83l-.793.792c.112.42.155.855.128 1.287l1.372-1.372a3 3 0 1 0-4.243-4.243L6.586 4.672z"/>
+                  </svg>
+                </div>
+                
+                <div class="link-info">
+                  <h3 class="link-title">{{ link.title }}</h3>
+                  <p class="link-url">{{ formatUrl(link.url) }}</p>
+                </div>
+                
+                <div class="link-arrow">
+                  <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"/>
+                  </svg>
+                </div>
+              </div>
+              
+              <div class="link-hover-effect"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Empty State -->
+        <div class="empty-state" *ngIf="!loading && !error && links.length === 0">
+          <div class="empty-icon">
+            <svg width="64" height="64" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M6.354 5.5H4a3 3 0 0 0 0 6h3a3 3 0 0 0 2.83-4H9c-.086 0-.17.01-.25.031A2 2 0 0 1 7 5.5zM4 6.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zM12 6.5a3 3 0 0 0-2.83 4H12a3 3 0 0 0 0-6h-1.17A2 2 0 0 1 9 5.5h3zM12 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"/>
+            </svg>
+          </div>
+          <h3>Sin links aún</h3>
+          <p>Este usuario aún no ha agregado ningún link.</p>
+        </div>
+
+        <!-- Footer -->
+        <div class="profile-footer">
+          <p>Creado con <span class="heart">❤️</span> usando LinkTree</p>
+          <button class="btn btn-outline btn-small" (click)="goHome()">
+            Crear mi perfil
+          </button>
+        </div>
+      </div>
+    </div>

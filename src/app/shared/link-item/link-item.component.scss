@@ -1,0 +1,133 @@
+.link-item {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 20px;
+      background: white;
+      border-radius: 15px;
+      border: 2px solid #f0f0f0;
+      transition: all 0.3s ease;
+      cursor: move;
+      margin-bottom: 15px;
+    }
+
+    .link-item:hover {
+      border-color: #667eea;
+      box-shadow: 0 5px 20px rgba(102, 126, 234, 0.1);
+      transform: translateY(-2px);
+    }
+
+    .link-item.dragging {
+      opacity: 0.5;
+      transform: rotate(5deg);
+    }
+
+    .drag-handle {
+      color: #999;
+      cursor: grab;
+      padding: 5px;
+      border-radius: 5px;
+      transition: all 0.2s ease;
+    }
+
+    .drag-handle:hover {
+      color: #667eea;
+      background: #f8f9ff;
+    }
+
+    .drag-handle:active {
+      cursor: grabbing;
+    }
+
+    .link-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .link-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #333;
+      margin: 0 0 8px 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .link-url {
+      color: #667eea;
+      font-size: 14px;
+      margin: 0 0 8px 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      text-decoration: none;
+    }
+
+    .link-stats {
+      display: flex;
+      gap: 15px;
+      font-size: 12px;
+      color: #999;
+    }
+
+    .clicks-count {
+      font-weight: 500;
+      color: #667eea;
+    }
+
+    .link-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .action-btn {
+      padding: 8px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .edit-btn {
+      background: #f0f8ff;
+      color: #667eea;
+    }
+
+    .edit-btn:hover {
+      background: #667eea;
+      color: white;
+    }
+
+    .delete-btn {
+      background: #fff5f5;
+      color: #ff4757;
+    }
+
+    .delete-btn:hover {
+      background: #ff4757;
+      color: white;
+    }
+
+    @media (max-width: 768px) {
+      .link-item {
+        padding: 15px;
+        gap: 10px;
+      }
+
+      .link-title {
+        font-size: 16px;
+      }
+
+      .link-stats {
+        flex-direction: column;
+        gap: 5px;
+      }
+
+      .action-btn {
+        padding: 6px;
+      }
+    }
