@@ -59,6 +59,6 @@ export class LinksService {
    * Incrementa el contador de clicks de un link
    */
   incrementClick(linkId: string){
-    return this.http.post<ApiResponse<Link>>(`/links/${linkId}/click`, {});
+    return this.http.post<ApiResponse<Link>>(`${this.API_URL}/links/${linkId}/click`,{});
   }
 }

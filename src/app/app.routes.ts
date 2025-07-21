@@ -44,6 +44,11 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'analytics',
+        loadComponent: () => import('./features/analytics/analytics.component').then(m => m.AnalyticsComponent),
+        canActivate: [authGuardGuard]
+      },
+      {
         path: ':username',
         loadComponent: () => import('./features/public-profile/public-profile.component').then((m) => m.PublicProfileComponent),
       },

@@ -1,0 +1,220 @@
+<div class="analytics-container">
+      <!-- Header -->
+      <header class="analytics-header">
+        <div class="header-content">
+          <div class="header-info">
+            <button class="back-btn" (click)="goBack()">
+              <svg width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
+              </svg>
+            </button>
+            <div>
+              <h1 class="page-title">Analytics</h1>
+              <p class="page-subtitle">Analiza el rendimiento de tus links</p>
+            </div>
+          </div>
+          
+          <div class="period-selector">
+            <button 
+              *ngFor="let period of periods" 
+              class="period-btn"
+              [class.active]="selectedPeriod === period.value"
+              (click)="changePeriod(period.value)"
+            >
+              {{ period.label }}
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <!-- Loading State -->
+      <div class="loading-container" *ngIf="loading">
+        <div class="spinner"></div>
+        <p>Cargando analytics...</p>
+      </div>
+
+      <!-- Analytics Content -->
+      <div class="analytics-content" *ngIf="!loading && analyticsData">
+        <!-- Overview Cards -->
+        <div class="overview-section">
+          <h2 class="section-title">Resumen General</h2>
+          <div class="metrics-grid">
+            <div class="metric-card">
+              <div class="metric-icon total-clicks">
+                <svg width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
+                  <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                  <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+                </svg>
+              </div>
+              <div class="metric-info">
+                <h3>{{ analyticsData.totalClicks | number }}</h3>
+                <p>Clicks Totales</p>
+                <span class="metric-change" [class]="getChangeClass(analyticsData.clicksChange)">
+                  {{ formatChange(analyticsData.clicksChange) }}
+                </span>
+              </div>
+            </div>
+
+            <div class="metric-card">
+              <div class="metric-icon total-views">
+                <svg width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
+                  <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z"/>
+                  <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z"/>
+                </svg>
+              </div>
+              <div class="metric-info">
+                <h3>{{ analyticsData.totalViews | number }}</h3>
+                <p>Vistas del Perfil</p>
+                <span class="metric-change" [class]="getChangeClass(analyticsData.viewsChange)">
+                  {{ formatChange(analyticsData.viewsChange) }}
+                </span>
+              </div>
+            </div>
+
+            <div class="metric-card">
+              <div class="metric-icon ctr">
+                <svg width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
+                  <path d="M1.92.506a.5.5 0 0 1 .434.14L3 1.293l.646-.647a.5.5 0 0 1 .708 0L5 1.293l.646-.647a.5.5 0 0 1 .708 0L7 1.293l.646-.647a.5.5 0 0 1 .708 0L9 1.293l.646-.647a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .801.13l.5 1A.5.5 0 0 1 15 2v12a.5.5 0 0 1-.053.224l-.5 1a.5.5 0 0 1-.8.13L13 14.707l-.646.647a.5.5 0 0 1-.708 0L11 14.707l-.646.647a.5.5 0 0 1-.708 0L9 14.707l-.646.647a.5.5 0 0 1-.708 0L7 14.707l-.646.647a.5.5 0 0 1-.708 0L5 14.707l-.646.647a.5.5 0 0 1-.708 0L3 14.707l-.646.647a.5.5 0 0 1-.801-.13l-.5-1A.5.5 0 0 1 1 14V2a.5.5 0 0 1 .053-.224l.5-1a.5.5 0 0 1 .367-.27z"/>
+                </svg>
+              </div>
+              <div class="metric-info">
+                <h3>{{ analyticsData.clickThroughRate | number:'1.1-1' }}%</h3>
+                <p>Tasa de Clicks</p>
+                <span class="metric-change" [class]="getChangeClass(analyticsData.ctrChange)">
+                  {{ formatChange(analyticsData.ctrChange) }}
+                </span>
+              </div>
+            </div>
+
+            <div class="metric-card">
+              <div class="metric-icon active-links">
+                <svg width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
+                  <path d="M6.354 5.5H4a3 3 0 0 0 0 6h3a3 3 0 0 0 2.83-4H9c-.086 0-.17.01-.25.031A2 2 0 0 1 7 5.5zM4 6.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zM12 6.5a3 3 0 0 0-2.83 4H12a3 3 0 0 0 0-6h-1.17A2 2 0 0 1 9 5.5h3zM12 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"/>
+                </svg>
+              </div>
+              <div class="metric-info">
+                <h3>{{ analyticsData.activeLinks | number }}</h3>
+                <p>Links Activos</p>
+                <span class="metric-change neutral">
+                  {{ analyticsData.totalLinks }} total
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Charts Section -->
+        <div class="charts-section">
+          <div class="chart-container">
+            <h3 class="chart-title">Clicks en el Tiempo</h3>
+            <div class="chart-wrapper">
+              <canvas #clicksChart></canvas>
+            </div>
+          </div>
+
+          <div class="chart-container">
+            <h3 class="chart-title">Vistas del Perfil</h3>
+            <div class="chart-wrapper">
+              <canvas #viewsChart></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Top Links Section -->
+        <div class="top-links-section">
+          <h2 class="section-title">Links Más Populares</h2>
+          <div class="links-ranking">
+            <div 
+              *ngFor="let link of analyticsData.topLinks; let i = index; trackBy: trackByLinkId" 
+              class="link-rank-item"
+              [class]="'rank-' + (i + 1)"
+            >
+              <div class="rank-number">{{ i + 1 }}</div>
+              <div class="link-info">
+                <h4>{{ link.title }}</h4>
+                <p>{{ formatUrl(link.url) }}</p>
+              </div>
+              <div class="link-stats">
+                <div class="stat">
+                  <span class="stat-value">{{ link.click_count | number }}</span>
+                  <span class="stat-label">clicks</span>
+                </div>
+                <div class="stat">
+                  <span class="stat-value">{{ link.clickPercentage | number:'1.1-1' }}%</span>
+                  <span class="stat-label">del total</span>
+                </div>
+              </div>
+              <div class="progress-bar">
+                <div class="progress-fill" [style.width.%]="link.clickPercentage"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Comparison Section -->
+        <div class="comparison-section" *ngIf="periodComparison">
+          <h2 class="section-title">Comparación de Períodos</h2>
+          <div class="comparison-grid">
+            <div class="comparison-card">
+              <h4>Período Actual</h4>
+              <div class="period-stats">
+                <div class="stat-item">
+                  <span class="stat-number">{{ periodComparison.current.clicks | number }}</span>
+                  <span class="stat-label">Clicks</span>
+                </div>
+                <div class="stat-item">
+                  <span class="stat-number">{{ periodComparison.current.views | number }}</span>
+                  <span class="stat-label">Vistas</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="comparison-card">
+              <h4>Período Anterior</h4>
+              <div class="period-stats">
+                <div class="stat-item">
+                  <span class="stat-number">{{ periodComparison.previous.clicks | number }}</span>
+                  <span class="stat-label">Clicks</span>
+                </div>
+                <div class="stat-item">
+                  <span class="stat-number">{{ periodComparison.previous.views | number }}</span>
+                  <span class="stat-label">Vistas</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="comparison-card highlight">
+              <h4>Cambio</h4>
+              <div class="period-stats">
+                <div class="stat-item">
+                  <span class="stat-number" [class]="getChangeClass(periodComparison.clicksChange)">
+                    {{ formatChange(periodComparison.clicksChange) }}
+                  </span>
+                  <span class="stat-label">Clicks</span>
+                </div>
+                <div class="stat-item">
+                  <span class="stat-number" [class]="getChangeClass(periodComparison.viewsChange)">
+                    {{ formatChange(periodComparison.viewsChange) }}
+                  </span>
+                  <span class="stat-label">Vistas</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Empty State -->
+      <div class="empty-state" *ngIf="!loading && !analyticsData">
+        <div class="empty-icon">
+          <svg width="64" height="64" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M1.92.506a.5.5 0 0 1 .434.14L3 1.293l.646-.647a.5.5 0 0 1 .708 0L5 1.293l.646-.647a.5.5 0 0 1 .708 0L7 1.293l.646-.647a.5.5 0 0 1 .708 0L9 1.293l.646-.647a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .801.13l.5 1A.5.5 0 0 1 15 2v12a.5.5 0 0 1-.053.224l-.5 1a.5.5 0 0 1-.8.13L13 14.707l-.646.647a.5.5 0 0 1-.708 0L11 14.707l-.646.647a.5.5 0 0 1-.708 0L9 14.707l-.646.647a.5.5 0 0 1-.708 0L7 14.707l-.646.647a.5.5 0 0 1-.708 0L5 14.707l-.646.647a.5.5 0 0 1-.708 0L3 14.707l-.646.647a.5.5 0 0 1-.801-.13l-.5-1A.5.5 0 0 1 1 14V2a.5.5 0 0 1 .053-.224l.5-1a.5.5 0 0 1 .367-.27z"/>
+          </svg>
+        </div>
+        <h3>No hay datos suficientes</h3>
+        <p>Necesitas más actividad para generar analytics significativos.</p>
+        <a routerLink="/dashboard" class="btn btn-primary">
+          Volver al Perfil
+        </a>
+      </div>
+    </div>

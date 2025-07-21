@@ -195,4 +195,11 @@ export class DashboardComponentComponent {
     }, 5000);
   }
 
+    /**
+   * Navega a la página de analytics
+   */
+  goToAnalytics(): void {
+    this.router.navigate(['/analytics']);
+  }
+
 }

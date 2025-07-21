@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { BehaviorSubject, tap } from 'rxjs';
-import { AuthResponse } from '../../models/user.interface';
+import { AuthResponse, User } from '../../models/user.interface';
 import { response } from 'express';
 
 @Injectable({
@@ -11,6 +11,7 @@ export class AuthService {
   private readonly API_URL = 'https://biolink-api-835852425105.us-central1.run.app';
   private http = inject(HttpClient)
   private tokenSubject = new BehaviorSubject<string | null>(null);
+  private currentUserSubject = new BehaviorSubject<string | null>(null);
   token$ = this.tokenSubject.asObservable();
 
   constructor() {
@@ -27,6 +28,7 @@ export class AuthService {
         this.tokenSubject.next(response.access_token);
         localStorage.setItem('token', response.access_token);
         localStorage.setItem('username', response.username);
+        this.currentUserSubject.next(response.username);
       }
       )
     )
@@ -40,16 +42,24 @@ export class AuthService {
     this.tokenSubject.next(null);
     localStorage.removeItem('token');
     localStorage.removeItem('username');
+    this.currentUserSubject.next(null);
   }
 
   restoreSession() {
-    if (typeof window !== undefined && typeof localStorage !== undefined) {
+    if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
       const token = localStorage.getItem('token');
 
       if (token) {
         this.tokenSubject.next(token)
       }
     }
+  }
+
+  /**
+   * Obtiene el usuario actual
+   */
+  getCurrentUser(): string | null {
+    return this.currentUserSubject.value;
   }
 }
 

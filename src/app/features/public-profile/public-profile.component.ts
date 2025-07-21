@@ -71,7 +71,7 @@ export class PublicProfileComponent {
     this.linkService.incrementClick(link.id).subscribe({
       next: () => {
         // Actualizar el contador localmente
-        link.clicks++;
+        link.click_count++;
       },
       error: (error) => {
         console.error('Error registering click:', error);
@@ -106,7 +106,7 @@ export class PublicProfileComponent {
    * Calcula el total de clicks
    */
   getTotalClicks(): number {
-    return this.links.reduce((total, link) => total + link.clicks, 0);
+    return this.links.reduce((total, link) => total + link.click_count, 0);
   }
 
   /**

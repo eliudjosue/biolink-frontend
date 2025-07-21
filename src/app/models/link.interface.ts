@@ -6,7 +6,7 @@ export interface Link {
   id: string;
   title: string;
   url: string;
-  clicks: number;
+  click_count: number;
   order: number;
   userId: string;
   createdAt: string;
