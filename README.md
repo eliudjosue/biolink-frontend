@@ -1,4 +1,64 @@
-# BiolinkFront
+# 🔗 BioLink Frontend (Angular 17)
+
+Frontend moderno para una aplicación tipo Linktree, construido con Angular, Tailwind y Chart.js.  
+Permite a los usuarios gestionar enlaces personalizados, acceder a estadísticas visuales y compartir su perfil público.
+
+---
+
+## 🚀 Funcionalidades
+
+- 🟣 Panel de usuario con links personalizados
+- 📊 Dashboard con analíticas visuales (Chart.js)
+- 🖼️ Perfiles públicos accesibles vía `/username`
+- ✅ Autenticación con JWT
+- 📱 Diseño responsive y UI moderna
+
+---
+
+## 🛠️ Tecnologías
+
+- Angular 17 + Standalone Components
+- RxJS + Guards personalizados
+- Chart.js
+- Angular Router
+
+---
+
+## ▶️ Iniciar en local
+
+```bash
+git clone https://github.com/tu-usuario/biolink-frontend.git
+cd biolink-frontend
+npm install
+ng serve
+```
+
+> ⚠️ Requiere tener corriendo previamente la API backend:  
+> [Biolink API FastAPI](https://github.com/eliudjosue/biolink-api-fastapi)
+
+---
+
+## 📂 Estructura general
+
+```
+src/
+├── app/
+│   ├── core/            # Guards, servicios globales
+│   ├── features/        # Módulos funcionales (login, dashboard, etc)
+│   ├── models/          # Interfaces y tipos
+│   ├── services/        # Servicios conectados a la API
+│   ├── layouts/         # Main layout con rutas hijas
+```
+
+---
+
+## ✍️ Autor
+
+Desarrollado por [Eliud Campos](https://github.com/eliudjosue)  
+Proyecto open source educativo y extensible 🚀
+
+---
+<!-- # BiolinkFront -->
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.3.17.
 
