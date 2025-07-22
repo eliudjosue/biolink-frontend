@@ -43,6 +43,7 @@ export class AnalyticsComponent {
   ngOnInit(): void {
     this.currentUser = this.authService.getCurrentUser();
     this.loadAnalytics();
+    Chart.register(...registerables);
   }
 
   ngAfterViewInit(): void {
@@ -61,10 +62,12 @@ export class AnalyticsComponent {
           this.analyticsData = response.data;
           this.loadPeriodComparison();
           
-          // Crear gráficos después de cargar los datos
+         // Crear gráficos después de cargar los datos y que la vista esté lista
           setTimeout(() => {
-            this.createCharts();
-          }, 100);
+            if (this.clicksChartRef && this.viewsChartRef) {
+              this.createCharts();
+            }
+          }, 200);
         }
         this.loading = false;
       },
@@ -100,11 +103,17 @@ export class AnalyticsComponent {
     this.loadAnalytics();
   }
 
-  /**
+ /**
    * Crea los gráficos de Chart.js
    */
   createCharts(): void {
     if (!this.analyticsData) return;
+
+    // Verificar que los elementos canvas existan
+    if (!this.clicksChartRef?.nativeElement || !this.viewsChartRef?.nativeElement) {
+      console.warn('Canvas elements not ready yet');
+      return;
+    }
 
     this.createClicksChart();
     this.createViewsChart();
@@ -114,18 +123,31 @@ export class AnalyticsComponent {
    * Crea el gráfico de clicks
    */
   createClicksChart(): void {
-    if (!this.clicksChartRef || !this.analyticsData) return;
+    if (!this.clicksChartRef?.nativeElement || !this.analyticsData) {
+      console.warn('Clicks chart canvas not ready');
+      return;
+    }
 
     const ctx = this.clicksChartRef.nativeElement.getContext('2d');
-    if (!ctx) return;
+    if (!ctx) {
+      console.error('Could not get 2D context for clicks chart');
+      return;
+    }
 
+    // Preparar datos para el gráfico
+    const labels = this.analyticsData.dailyStats.map(stat => {
+      const date = new Date(stat.date);
+      return date.toLocaleDateString('es-ES', { month: 'short', day: 'numeric' });
+    });
+    
+    const data = this.analyticsData.dailyStats.map(stat => stat.clicks);
     const config: ChartConfiguration = {
       type: 'line',
       data: {
-        labels: this.analyticsData.dailyStats.map(stat => stat.date),
+        labels: labels,
         datasets: [{
           label: 'Clicks',
-          data: this.analyticsData.dailyStats.map(stat => stat.clicks),
+          data: data,
           borderColor: '#667eea',
           backgroundColor: 'rgba(102, 126, 234, 0.1)',
           borderWidth: 3,
@@ -148,13 +170,6 @@ export class AnalyticsComponent {
         },
         scales: {
           x: {
-            type: 'time',
-            time: {
-              unit: 'day',
-              displayFormats: {
-                day: 'MMM dd'
-              }
-            },
             grid: {
               display: false
             }
@@ -174,25 +189,42 @@ export class AnalyticsComponent {
       }
     };
 
-    this.clicksChart = new Chart(ctx, config);
+    try {
+      this.clicksChart = new Chart(ctx, config);
+    } catch (error) {
+      console.error('Error creating clicks chart:', error);
+    }
   }
 
-  /**
+ /**
    * Crea el gráfico de vistas
    */
   createViewsChart(): void {
-    if (!this.viewsChartRef || !this.analyticsData) return;
+    if (!this.viewsChartRef?.nativeElement || !this.analyticsData) {
+      console.warn('Views chart canvas not ready');
+      return;
+    }
 
     const ctx = this.viewsChartRef.nativeElement.getContext('2d');
-    if (!ctx) return;
+    if (!ctx) {
+      console.error('Could not get 2D context for views chart');
+      return;
+    }
 
+    // Preparar datos para el gráfico
+    const labels = this.analyticsData.dailyStats.map(stat => {
+      const date = new Date(stat.date);
+      return date.toLocaleDateString('es-ES', { month: 'short', day: 'numeric' });
+    });
+    
+    const data = this.analyticsData.dailyStats.map(stat => stat.views);
     const config: ChartConfiguration = {
       type: 'bar',
       data: {
-        labels: this.analyticsData.dailyStats.map(stat => stat.date),
+        labels: labels,
         datasets: [{
           label: 'Vistas',
-          data: this.analyticsData.dailyStats.map(stat => stat.views),
+          data: data,
           backgroundColor: 'rgba(245, 87, 108, 0.8)',
           borderColor: '#f5576c',
           borderWidth: 1,
@@ -210,13 +242,6 @@ export class AnalyticsComponent {
         },
         scales: {
           x: {
-            type: 'time',
-            time: {
-              unit: 'day',
-              displayFormats: {
-                day: 'MMM dd'
-              }
-            },
             grid: {
               display: false
             }
@@ -231,7 +256,11 @@ export class AnalyticsComponent {
       }
     };
 
-    this.viewsChart = new Chart(ctx, config);
+    try {
+      this.viewsChart = new Chart(ctx, config);
+    } catch (error) {
+      console.error('Error creating views chart:', error);
+    }
   }
 
   /**

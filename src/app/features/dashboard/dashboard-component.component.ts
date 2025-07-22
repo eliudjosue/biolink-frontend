@@ -1,14 +1,13 @@
-import { Component, inject } from '@angular/core';
-import { Link, LinkData } from '../../models/link.interface';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { User } from '../../models/user.interface';
+import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { CommonModule } from '@angular/common';
-import { LinkItemComponent } from '../../shared/link-item/link-item.component';
-import { CdkDragDrop, moveItemInArray, DragDropModule } from '@angular/cdk/drag-drop';
-import { AuthService } from '../../services/auth/auth.service';
+import { Component, inject } from '@angular/core';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { Link, LinkData } from '../../models/link.interface';
+import { User } from '../../models/user.interface';
+import { AuthService } from '../../services/auth/auth.service';
 import { LinksService } from '../../services/links/links.service';
-import { title } from 'process';
+import { LinkItemComponent } from '../../shared/link-item/link-item.component';
 
 @Component({
   selector: 'app-dashboard-component',
@@ -166,7 +165,12 @@ export class DashboardComponentComponent {
 
   trackByLinkId(index: number, link: Link) { }
 
-  getTotalClicks() { }
+   /**
+   * Calcula el total de clicks
+   */
+  getTotalClicks(): number {
+    return this.links.reduce((total, link) => total + link.click_count, 0);
+  }
 
   logout() {
     this.authService.logout();
